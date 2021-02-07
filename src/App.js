@@ -16,11 +16,12 @@ const App = () => {
         return response.json();
       })
       .then(function (myJson) {
-        setComments(
-          myJson.items.map((item) => {
-            return item.snippet.topLevelComment.snippet.textOriginal;
-          })
-        );
+        const comments = myJson.items.map((item) => {
+          return item.snippet.topLevelComment.snippet.textOriginal;
+        });
+
+        const reverseComments = comments.reverse();
+        setComments(reverseComments);
       });
   };
 
@@ -76,7 +77,7 @@ const App = () => {
         <input type="submit" value="Submit" />
         <ol>
           {fliterComments().map((comment, index) => {
-            return <li key={index}>{comment}</li>;
+            return <li key={index}><p>{comment}</p></li>;
           })}
         </ol>
       </form>
