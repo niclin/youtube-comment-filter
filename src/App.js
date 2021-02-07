@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./index.css";
+import {googleApiKey} from "./setting"
 
 const App = () => {
   const [url, setUrl] = useState("https://youtu.be/BGaDN9wxbKE");
@@ -12,7 +13,7 @@ const App = () => {
     const videoId = url.split("/").slice(-1)[0];
 
     fetch(
-      `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&maxResults=100&order=time&videoId=${videoId}&key=AIzaSyBHcXH__Q7bf-MoM26cYZ0FK3XZQWL81pk`
+      `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&maxResults=100&order=time&videoId=${videoId}&key=${googleApiKey}`
     )
       .then(function (response) {
         return response.json();
