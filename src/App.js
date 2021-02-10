@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import "./index.css";
-import {googleApiKey} from "./setting"
+import { googleApiKey } from "./setting";
 
 const App = () => {
   const [url, setUrl] = useState("https://youtu.be/BGaDN9wxbKE");
   const [startText, setStartText] = useState("");
   const [endText, setEndText] = useState("");
   const [comments, setComments] = useState([]);
-  const [replyedCommentId, setReplyedCommentId] = useState([])
+  const [replyedCommentId, setReplyedCommentId] = useState([]);
 
   const fetchYoutubeComment = () => {
     const videoId = url.split("/").slice(-1)[0];
@@ -20,7 +20,19 @@ const App = () => {
       })
       .then(function (myJson) {
         const comments = myJson.items.map((item) => {
-          return { commentId: item.id, content: item.snippet.topLevelComment.snippet.textOriginal };
+          console.log(item);
+
+          const {
+            textOriginal,
+            authorDisplayName,
+            authorProfileImageUrl,
+          } = item.snippet.topLevelComment.snippet;
+          return {
+            commentId: item.id,
+            author: authorDisplayName,
+            avatar: authorProfileImageUrl,
+            content: textOriginal,
+          };
         });
 
         const reverseComments = comments.reverse();
@@ -36,7 +48,7 @@ const App = () => {
   const fliterComments = () => {
     return comments.filter((comment) => {
       if (replyedCommentId.includes(comment.commentId)) {
-        return
+        return;
       }
 
       const lowerCaseComment = comment.content.toLowerCase();
@@ -50,8 +62,8 @@ const App = () => {
   };
 
   const tagIsReplyed = (commentId) => {
-    setReplyedCommentId([...replyedCommentId, commentId])
-  }
+    setReplyedCommentId([...replyedCommentId, commentId]);
+  };
 
   return (
     <div className="App" className="container mx-auto">
@@ -107,12 +119,16 @@ const App = () => {
               {fliterComments().map((comment) => {
                 return (
                   <div className="shadow-inner rounded px-8 py-8 pt-8 mb-8 border border-indigo-60">
-
+                    <img src={comment.avatar} />
+                    <strong>留言觀眾： {comment.author}</strong>
+                    <hr />
                     <p className="comment-text">{comment.content}</p>
-                    <button className="mt-8 bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={() => tagIsReplyed(comment.commentId)}>
+                    <button
+                      className="mt-8 bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      onClick={() => tagIsReplyed(comment.commentId)}
+                    >
                       已回覆
                     </button>
-
                   </div>
                 );
               })}
